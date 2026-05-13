@@ -1,19 +1,20 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
+
+class Profile(BaseModel):
+  name: str
+  email: str
+  age: int
+
+class Product(BaseModel):
+  name: str
+  price: float
+  discount: int
+  discounted_price: float
 
 app = FastAPI()
 
-@app.get('/user/admin')
-def admin():
-  return {"This is an admin page"}
-
-@app.get('/user/{username}')
-def profile(username: str):
-  return {f"This is a profile page for the user: {username}"}
-
-@app.get('/products')
-def products(id: int = 1, price: float = 22.222): # these are query parameters not path parameters
-  return {f"Product with an id: {id} and price: {price}"}
-
-@app.get('/profile/{userid}/comments')
-def comments(userid: int, commentid: int):
-  return {f"Profile page for user: {userid} and comment with id: {commentid}"}
+@app.post('/addproduct/{product_id}')
+def addproduct(product: Product, product_id: int, category: str):
+  product.discounted_price = product.price - (product.discount / 100 * product.price)
+  return { "product_id": product_id, "product": product, "category": category }
