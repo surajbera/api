@@ -12,9 +12,12 @@ class Product(BaseModel):
   discount: int
   discounted_price: float
 
+class User(BaseModel):
+  name: str
+  email: str
+
 app = FastAPI()
 
-@app.post('/addproduct/{product_id}')
-def addproduct(product: Product, product_id: int, category: str):
-  product.discounted_price = product.price - (product.discount / 100 * product.price)
-  return { "product_id": product_id, "product": product, "category": category }
+@app.post('/purchase')
+def purchase(user: User, product: Product):
+  return { "user": user, "product": product }
